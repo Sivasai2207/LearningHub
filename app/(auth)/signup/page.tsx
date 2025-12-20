@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'sonner'
 import Link from 'next/link'
+import { ROUTES } from '@/lib/config/routes'
 
 export default function SignupPage() {
   const [loading, setLoading] = useState(false)
@@ -53,7 +54,7 @@ export default function SignupPage() {
               {loading ? 'Sign Up' : 'Sign Up'}
             </Button>
              <div className="text-sm text-center text-gray-500">
-                Already have an account? <Link href="/login" className="text-blue-600 hover:underline">Log in</Link>
+                Already have an account? <Link href={ROUTES.login} className="text-blue-600 hover:underline">Log in</Link>
             </div>
           </CardFooter>
         </form>

@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'sonner'
 import { createFirstTenant } from './actions'
+import { ROUTES } from '@/lib/config/routes'
 
 export default function SetupPage() {
   const [loading, setLoading] = useState(false)
@@ -25,7 +26,7 @@ export default function SetupPage() {
       toast.error(result.error)
     } else if (result?.tenantSlug) {
       toast.success('Company created successfully!')
-      router.push(`/t/${result.tenantSlug}/admin`)
+      router.push(ROUTES.tenant(result.tenantSlug).admin.dashboard)
     }
   }
 

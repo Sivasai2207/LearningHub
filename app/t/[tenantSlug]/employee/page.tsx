@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { LogOut } from 'lucide-react'
 import { redirect, notFound } from 'next/navigation'
 import { getTenantContext } from '@/lib/tenant/context'
+import { ROUTES } from '@/lib/config/routes'
 
 export default async function EmployeeDashboard({ params }: { params: Promise<{ tenantSlug: string }> }) {
     const { tenantSlug } = await params
@@ -20,7 +21,7 @@ export default async function EmployeeDashboard({ params }: { params: Promise<{ 
         "use server"
         const supabase = await createClient()
         await supabase.auth.signOut()
-        redirect('/login')
+        redirect(ROUTES.login)
     }
 
     return (
@@ -52,7 +53,7 @@ export default async function EmployeeDashboard({ params }: { params: Promise<{ 
                         <p className="text-muted-foreground">Continue your learning journey.</p>
                     </div>
                     
-                    <AssignedCourseGrid courses={courses} />
+                    <AssignedCourseGrid courses={courses} tenantSlug={tenantSlug} />
                 </div>
             </main>
         </div>

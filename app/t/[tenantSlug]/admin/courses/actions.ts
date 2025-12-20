@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { logAudit } from '@/lib/admin/audit'
+import { ROUTES } from '@/lib/config/routes'
 
 const courseSchema = z.object({
     title: z.string().min(1, "Title is required"),
@@ -36,7 +37,7 @@ export async function createCourse(formData: FormData, tenantId: string, tenantS
         metadata: { title, tenantId }
     })
 
-    revalidatePath(`/t/${tenantSlug}/admin/courses`)
+    revalidatePath(ROUTES.tenant(tenantSlug).admin.courses)
     return { success: true }
 }
 
@@ -65,7 +66,7 @@ export async function updateCourse(id: string, formData: FormData, tenantSlug: s
         metadata: { title, description }
     })
 
-    revalidatePath(`/t/${tenantSlug}/admin/courses`)
+    revalidatePath(ROUTES.tenant(tenantSlug).admin.courses)
     return { success: true }
 }
 
@@ -81,7 +82,7 @@ export async function deleteCourse(id: string, tenantSlug: string) {
         entityId: id
     })
 
-    revalidatePath(`/t/${tenantSlug}/admin/courses`)
+    revalidatePath(ROUTES.tenant(tenantSlug).admin.courses)
     return { success: true }
 }
 

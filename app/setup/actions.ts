@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { createServiceRoleClient } from '@/lib/supabase/admin'
 import { revalidatePath } from 'next/cache'
+import { ROUTES } from '@/lib/config/routes'
 
 export async function createFirstTenant(formData: FormData) {
     const supabase = await createClient()
@@ -85,6 +86,6 @@ export async function createFirstTenant(formData: FormData) {
         .update({ role: 'admin' })
         .eq('id', user.id)
 
-    revalidatePath('/', 'layout')
+    revalidatePath(ROUTES.home, 'layout')
     return { success: true, tenantSlug: companySlug }
 }

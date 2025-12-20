@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { ChevronLeft } from 'lucide-react'
 import { notFound } from 'next/navigation'
+import { ROUTES } from '@/lib/config/routes'
 
-export default async function ModuleDetailPage({ params }: { params: Promise<{ moduleId: string }> }) {
-    const { moduleId } = await params
+export default async function ModuleDetailPage({ params }: { params: Promise<{ tenantSlug: string, moduleId: string }> }) {
+    const { tenantSlug, moduleId } = await params
     const result = await getModuleWithContent(moduleId)
 
     if (!result) {
@@ -23,10 +24,10 @@ export default async function ModuleDetailPage({ params }: { params: Promise<{ m
     return (
         <div className="max-w-4xl mx-auto py-8 px-4">
             <nav className="flex items-center text-sm text-muted-foreground mb-4">
-                <Link href="/employee" className="hover:underline">Dashboard</Link>
+                <Link href={ROUTES.tenant(tenantSlug).employee.dashboard} className="hover:underline">Dashboard</Link>
                 <span className="mx-2">/</span>
                 {courseId ? (
-                    <Link href={`/employee/courses/${courseId}`} className="hover:underline truncate max-w-[200px]">
+                    <Link href={ROUTES.tenant(tenantSlug).employee.course(courseId)} className="hover:underline truncate max-w-[200px]">
                         {courseTitle}
                     </Link>
                 ) : (

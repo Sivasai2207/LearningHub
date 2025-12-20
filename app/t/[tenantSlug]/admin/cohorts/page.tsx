@@ -3,6 +3,7 @@ import { getTenantContext } from '@/lib/tenant/context'
 import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
 import Link from 'next/link'
+import { ROUTES } from '@/lib/config/routes'
 
 export default async function CohortsPage({ params }: { params: Promise<{ tenantSlug: string }> }) {
     const { tenantSlug } = await params
@@ -23,7 +24,7 @@ export default async function CohortsPage({ params }: { params: Promise<{ tenant
                      <p className="text-gray-500">Manage employee groups and mass assignments.</p>
                 </div>
                 <Button asChild>
-                    <Link href={`/t/${tenantSlug}/admin/cohorts/new`}>
+                    <Link href={ROUTES.tenant(tenantSlug).admin.cohortsNew}>
                         <Plus className="w-4 h-4 mr-2" />
                         New Cohort
                     </Link>
@@ -34,7 +35,7 @@ export default async function CohortsPage({ params }: { params: Promise<{ tenant
                 {cohorts?.map(cohort => (
                     <Link 
                         key={cohort.id} 
-                        href={`/t/${tenantSlug}/admin/cohorts/${cohort.id}`}
+                        href={ROUTES.tenant(tenantSlug).admin.cohortDetail(cohort.id)}
                         className="p-6 bg-white rounded-lg border hover:shadow-md transition-shadow"
                     >
                         <h3 className="font-semibold text-lg">{cohort.name}</h3>

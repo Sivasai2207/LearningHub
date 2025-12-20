@@ -9,6 +9,7 @@ import { Module } from '@/types/db'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import { ROUTES } from '@/lib/config/routes'
 
 export function ModuleActions({ module, courseId }: { module: Module, courseId: string }) {
   const [loading, setLoading] = useState(false)
@@ -32,7 +33,7 @@ export function ModuleActions({ module, courseId }: { module: Module, courseId: 
   return (
     <div className="flex items-center gap-2">
       <Button variant="outline" size="sm" asChild>
-        <Link href={`/t/${tenantSlug}/admin/modules/${module.id}/content`}>Manage Content</Link>
+        <Link href={ROUTES.tenant(tenantSlug).admin.content(module.id)}>Manage Content</Link>
       </Button>
       <ModuleDialog module={module} courseId={courseId} trigger={<Button variant="ghost" size="icon"><Edit className="h-4 w-4"/></Button>} />
       <Button variant="ghost" size="icon" onClick={handleDelete} disabled={loading}>

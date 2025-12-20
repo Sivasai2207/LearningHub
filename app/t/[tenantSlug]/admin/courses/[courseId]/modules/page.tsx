@@ -15,6 +15,7 @@ import {
 
 import { getTenantContext } from '@/lib/tenant/context'
 import { notFound } from 'next/navigation'
+import { ROUTES } from '@/lib/config/routes'
 
 export default async function ModulesPage({ params }: { params: Promise<{ tenantSlug: string, courseId: string }> }) {
   const { tenantSlug, courseId } = await params
@@ -35,7 +36,7 @@ export default async function ModulesPage({ params }: { params: Promise<{ tenant
     <div className="space-y-6">
       <div>
         <Button variant="ghost" size="sm" asChild className="mb-4 pl-0 hover:bg-transparent">
-            <Link href={`/t/${tenantSlug}/admin/courses`} className="flex items-center gap-1 text-muted-foreground hover:text-foreground">
+            <Link href={ROUTES.tenant(tenantSlug).admin.courses} className="flex items-center gap-1 text-muted-foreground hover:text-foreground">
                 <ChevronLeft className="w-4 h-4" />
                 Back to Courses
             </Link>

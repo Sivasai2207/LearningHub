@@ -3,6 +3,7 @@
 import { createServiceRoleClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import { logAudit } from '@/lib/admin/audit'
+import { SITE_URL, ROUTES } from '@/lib/config/routes'
 
 export async function requestPasswordReset(prevState: any, formData: FormData) {
     const email = formData.get('email') as string
@@ -50,7 +51,7 @@ export async function requestPasswordReset(prevState: any, formData: FormData) {
             type: 'recovery',
             email,
             options: {
-                redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback`
+                redirectTo: `${SITE_URL}${ROUTES.auth.callback}`
             }
         })
 

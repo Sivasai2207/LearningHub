@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'sonner'
 import Link from 'next/link'
+import { ROUTES } from '@/lib/config/routes'
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false)
@@ -42,7 +43,7 @@ export default function LoginPage() {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
-                <Link href="/forgot-password" className="text-sm text-blue-600 hover:underline">
+                <Link href={ROUTES.forgotPassword} className="text-sm text-blue-600 hover:underline">
                     Forgot password?
                 </Link>
               </div>
@@ -54,7 +55,7 @@ export default function LoginPage() {
               {loading ? 'Signing in...' : 'Sign In'}
             </Button>
             <div className="text-sm text-center text-gray-500">
-                Don't have an account? <Link href="/signup" className="text-blue-600 hover:underline">Sign up</Link>
+                Don't have an account? <Link href={ROUTES.signup} className="text-blue-600 hover:underline">Sign up</Link>
             </div>
           </CardFooter>
         </form>

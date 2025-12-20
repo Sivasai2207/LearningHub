@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { logAudit } from '@/lib/admin/audit'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
+import { SITE_URL, ROUTES } from '@/lib/config/routes'
 
 // Schema for Creating User
 const createUserSchema = z.object({
@@ -86,7 +87,7 @@ export async function createEmployee(formData: FormData, tenantId: string, tenan
         metadata: { email, role, tenantId }
     })
 
-    revalidatePath(`/t/${tenantSlug}/admin/employees`)
+    revalidatePath(ROUTES.tenant(tenantSlug).admin.employees)
     return { success: true, message: 'Employee created successfully. Please share the temporary password with them.' }
 }
 
@@ -112,7 +113,7 @@ export async function toggleEmployeeStatus(employeeId: string, currentStatus: bo
         metadata: { active: !currentStatus }
     })
 
-    revalidatePath(`/t/${tenantSlug}/admin/employees`)
+    revalidatePath(ROUTES.tenant(tenantSlug).admin.employees)
     return { success: true }
 }
 
@@ -145,7 +146,7 @@ export async function updateEmployeeRole(employeeId: string, newRole: 'admin' | 
         metadata: { role: newRole, tenantId: tenant.id }
     })
 
-    revalidatePath(`/t/${tenantSlug}/admin/employees`)
+    revalidatePath(ROUTES.tenant(tenantSlug).admin.employees)
     return { success: true }
 }
 
@@ -158,7 +159,7 @@ export async function sendMagicLink(email: string, tenantSlug: string) {
         type: 'magiclink',
         email,
         options: {
-            redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback`
+            redirectTo: `${SITE_URL}${ROUTES.auth.callback}`
         }
     })
 
@@ -171,7 +172,7 @@ export async function sendMagicLink(email: string, tenantSlug: string) {
         metadata: { email }
     })
 
-    revalidatePath(`/t/${tenantSlug}/admin/employees`)
+    revalidatePath(ROUTES.tenant(tenantSlug).admin.employees)
     return { success: true, message: 'Magic link email sent successfully' }
 }
 
@@ -182,7 +183,7 @@ export async function sendPasswordReset(email: string, tenantSlug: string) {
         type: 'recovery',
         email,
         options: {
-            redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback`
+            redirectTo: `${SITE_URL}${ROUTES.auth.callback}`
         }
     })
 
@@ -195,7 +196,7 @@ export async function sendPasswordReset(email: string, tenantSlug: string) {
         metadata: { email }
     })
 
-    revalidatePath(`/t/${tenantSlug}/admin/employees`)
+    revalidatePath(ROUTES.tenant(tenantSlug).admin.employees)
     return { success: true, message: 'Password reset email sent successfully' }
 }
 
@@ -276,7 +277,7 @@ export async function deleteEmployee(employeeId: string, tenantId: string, tenan
         console.error('Audit log failed:', auditErr)
     }
 
-    revalidatePath(`/t/${tenantSlug}/admin/employees`)
+    revalidatePath(ROUTES.tenant(tenantSlug).admin.employees)
     return { success: true }
 }
 
@@ -301,6 +302,6 @@ export async function resetEmployeePassword(employeeId: string, newPassword: str
         metadata: { password_reset: true, manual_override: true }
     })
 
-    revalidatePath(`/t/${tenantSlug}/admin/employees`)
+    revalidatePath(ROUTES.tenant(tenantSlug).admin.employees)
     return { success: true, message: 'Password has been overridden successfully.' }
 }

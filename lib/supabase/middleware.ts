@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { ROUTES } from '@/lib/config/routes'
 
 export async function updateSession(request: NextRequest) {
     let supabaseResponse = NextResponse.next({
@@ -40,9 +41,9 @@ export async function updateSession(request: NextRequest) {
     const path = request.nextUrl.pathname;
 
     // 0. Forced Password Reset Check
-    if (user && user.user_metadata?.force_password_reset && path !== '/update-password' && !path.startsWith('/auth/signout')) {
+    if (user && user.user_metadata?.force_password_reset && path !== ROUTES.updatePassword && !path.startsWith(ROUTES.auth.signout)) {
         const url = request.nextUrl.clone()
-        url.pathname = '/update-password'
+        url.pathname = ROUTES.updatePassword
         return NextResponse.redirect(url)
     }
 
@@ -71,7 +72,7 @@ export async function updateSession(request: NextRequest) {
 
     if (!user && (isAdminPath || isEmployeePath)) {
         const url = request.nextUrl.clone()
-        url.pathname = '/login'
+        url.pathname = ROUTES.login
         return NextResponse.redirect(url)
     }
 
@@ -80,7 +81,7 @@ export async function updateSession(request: NextRequest) {
         if (!tenantContext || !tenantContext.active) {
             // Invalid or inactive tenant
             const url = request.nextUrl.clone()
-            url.pathname = '/' // Go to landing or common home
+            url.pathname = ROUTES.home
             return NextResponse.redirect(url)
         }
 
@@ -94,14 +95,14 @@ export async function updateSession(request: NextRequest) {
         // Check Membership
         if (!membership || !membership.active) {
             const url = request.nextUrl.clone()
-            url.pathname = '/'
+            url.pathname = ROUTES.home
             return NextResponse.redirect(url)
         }
 
         // Check Admin Access within Tenant
         if (isAdminPath && !['owner', 'admin', 'trainer'].includes(membership.role)) {
             const url = request.nextUrl.clone()
-            url.pathname = `/t/${pathParts[1]}/employee`
+            url.pathname = ROUTES.tenant(pathParts[1]).employee.dashboard
             return NextResponse.redirect(url)
         }
 
@@ -115,7 +116,7 @@ export async function updateSession(request: NextRequest) {
     }
 
     // 4. Redirect logged in users away from login/signup (to their last/default tenant?)
-    if (user && (path === '/login' || path === '/signup')) {
+    if (user && (path === ROUTES.login || path === ROUTES.signup)) {
         const { data: memberships } = await supabase
             .from('tenant_memberships')
             .select('role, tenants(slug)')
@@ -127,11 +128,12 @@ export async function updateSession(request: NextRequest) {
         if (memberships && memberships.length > 0) {
             const m = memberships[0];
             const slug = (m.tenants as any).slug;
+            const tenantRoutes = ROUTES.tenant(slug);
             url.pathname = ['owner', 'admin', 'trainer'].includes(m.role)
-                ? `/t/${slug}/admin`
-                : `/t/${slug}/employee`;
+                ? tenantRoutes.admin.dashboard
+                : tenantRoutes.employee.dashboard;
         } else {
-            url.pathname = '/' // User has no active memberships
+            url.pathname = ROUTES.home
         }
         return NextResponse.redirect(url)
     }

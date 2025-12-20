@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { z } from 'zod'
+import { ROUTES } from '@/lib/config/routes'
 
 const authSchema = z.object({
     email: z.string().email(),
@@ -41,15 +42,16 @@ export async function login(formData: FormData) {
         .limit(1)
         .single()
 
-    revalidatePath('/', 'layout')
+    revalidatePath(ROUTES.home, 'layout')
 
     // If no membership, redirect to setup
     if (!membership || !membership.tenant) {
-        redirect('/setup')
+        redirect(ROUTES.setup)
     }
 
     // Redirect to their tenant admin
-    redirect(`/t/${(membership.tenant as any).slug}/admin`)
+    const slug = (membership.tenant as any).slug
+    redirect(ROUTES.tenant(slug).admin.dashboard)
 }
 
 export async function signup(formData: FormData) {
@@ -77,6 +79,6 @@ export async function signup(formData: FormData) {
         return { error: error.message }
     }
 
-    revalidatePath('/', 'layout')
-    redirect('/setup')
+    revalidatePath(ROUTES.home, 'layout')
+    redirect(ROUTES.setup)
 }

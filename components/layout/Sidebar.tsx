@@ -4,20 +4,22 @@ import Link from 'next/link'
 import { useParams, usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Folder, Home, Library, Settings, Users, Search, Activity } from 'lucide-react'
+import { ROUTES } from '@/lib/config/routes'
 
 export function Sidebar() {
   const pathname = usePathname()
   const params = useParams()
   const tenantSlug = params.tenantSlug as string
 
+  const tenantRoutes = ROUTES.tenant(tenantSlug).admin
   const navigation = [
-    { name: 'Dashboard', href: `/t/${tenantSlug}/admin`, icon: Home },
-    { name: 'Courses', href: `/t/${tenantSlug}/admin/courses`, icon: Library },
-    { name: 'Assignments', href: `/t/${tenantSlug}/admin/assignments`, icon: Settings },
-    { name: 'Employees', href: `/t/${tenantSlug}/admin/employees`, icon: Users },
-    { name: 'Cohorts', href: `/t/${tenantSlug}/admin/cohorts`, icon: Folder },
-    { name: 'Search', href: `/t/${tenantSlug}/admin/search`, icon: Search },
-    { name: 'Audit Logs', href: `/t/${tenantSlug}/admin/audit`, icon: Activity },
+    { name: 'Dashboard', href: tenantRoutes.dashboard, icon: Home },
+    { name: 'Courses', href: tenantRoutes.courses, icon: Library },
+    { name: 'Assignments', href: tenantRoutes.assignments, icon: Settings },
+    { name: 'Employees', href: tenantRoutes.employees, icon: Users },
+    { name: 'Cohorts', href: tenantRoutes.cohorts, icon: Folder },
+    { name: 'Search', href: tenantRoutes.search, icon: Search },
+    { name: 'Audit Logs', href: tenantRoutes.audit, icon: Activity },
   ]
 
   return (

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { LogOut } from 'lucide-react'
+import { ROUTES } from '@/lib/config/routes'
 
 export function Topbar() {
   const router = useRouter()
@@ -11,7 +12,7 @@ export function Topbar() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
-    router.push('/login')
+    router.push(ROUTES.login)
   }
 
   return (

@@ -1,8 +1,9 @@
 import { Module } from '@/types/db'
 import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
+import { ROUTES } from '@/lib/config/routes'
 
-export function ModuleList({ modules }: { modules: Module[] }) {
+export function ModuleList({ modules, tenantSlug }: { modules: Module[], tenantSlug: string }) {
     if (modules.length === 0) {
         return <div className="text-muted-foreground italic">No modules available yet.</div>
     }
@@ -12,7 +13,7 @@ export function ModuleList({ modules }: { modules: Module[] }) {
             {modules.map((module) => (
                 <Link 
                     key={module.id} 
-                    href={`/employee/modules/${module.id}`}
+                    href={ROUTES.tenant(tenantSlug).employee.module(module.id)}
                     className="block p-4 border rounded-lg bg-white hover:border-blue-500 hover:shadow-sm transition-all"
                 >
                     <div className="flex items-center justify-between">

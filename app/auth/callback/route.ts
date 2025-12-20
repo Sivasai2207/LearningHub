@@ -1,10 +1,11 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
+import { SITE_URL, ROUTES } from '@/lib/config/routes'
 
 export async function GET(request: Request) {
-    const { searchParams, origin } = new URL(request.url)
+    const { searchParams } = new URL(request.url)
     const code = searchParams.get('code')
-    const next = searchParams.get('next') ?? '/'
+    const next = searchParams.get('next') ?? ROUTES.home
 
     if (code) {
         const supabase = await createClient()
@@ -25,18 +26,19 @@ export async function GET(request: Request) {
 
                 if (membership && membership.tenants) {
                     const slug = (membership.tenants as any).slug
+                    const tenantRoutes = ROUTES.tenant(slug)
                     const dashboardPath = ['owner', 'admin', 'trainer'].includes(membership.role)
-                        ? `/t/${slug}/admin`
-                        : `/t/${slug}/employee`
-                    return NextResponse.redirect(`${origin}${dashboardPath}`)
+                        ? tenantRoutes.admin.dashboard
+                        : tenantRoutes.employee.dashboard
+                    return NextResponse.redirect(`${SITE_URL}${dashboardPath}`)
                 }
 
                 // No membership - redirect to setup
-                return NextResponse.redirect(`${origin}/setup`)
+                return NextResponse.redirect(`${SITE_URL}${ROUTES.setup}`)
             }
         }
     }
 
     // Login failed or something went wrong, redirect to error page or login
-    return NextResponse.redirect(`${origin}/login?error=Unable to verify authentication`)
+    return NextResponse.redirect(`${SITE_URL}${ROUTES.login}?error=Unable to verify authentication`)
 }

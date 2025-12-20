@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { logAudit } from '@/lib/admin/audit'
+import { ROUTES } from '@/lib/config/routes'
 
 export async function getEmployeeAssignments(employeeId: string, tenantId: string) {
     const supabase = await createClient()
@@ -67,6 +68,6 @@ export async function saveAssignments(employeeId: string, courseIds: string[], t
         })
     }
 
-    revalidatePath(`/t/${tenantSlug}/admin/assignments`)
+    revalidatePath(ROUTES.tenant(tenantSlug).admin.assignments)
     return { success: true }
 }

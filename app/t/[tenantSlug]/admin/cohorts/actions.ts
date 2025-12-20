@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { logAudit } from '@/lib/admin/audit'
+import { ROUTES } from '@/lib/config/routes'
 
 export async function createCohort(tenantId: string, tenantSlug: string, name: string, description?: string) {
     const supabase = await createClient()
@@ -22,7 +23,7 @@ export async function createCohort(tenantId: string, tenantSlug: string, name: s
         metadata: { name, tenantId }
     })
 
-    revalidatePath(`/t/${tenantSlug}/admin/cohorts`)
+    revalidatePath(ROUTES.tenant(tenantSlug).admin.cohorts)
     return { success: true }
 }
 
@@ -42,7 +43,7 @@ export async function addMemberToCohort(tenantId: string, tenantSlug: string, co
         metadata: { employeeId, tenantId }
     })
 
-    revalidatePath(`/t/${tenantSlug}/admin/cohorts/${cohortId}`)
+    revalidatePath(ROUTES.tenant(tenantSlug).admin.cohortDetail(cohortId))
     return { success: true }
 }
 
@@ -66,6 +67,6 @@ export async function assignCourseToCohort(tenantId: string, tenantSlug: string,
         metadata: { courseId, tenantId }
     })
 
-    revalidatePath(`/t/${tenantSlug}/admin/cohorts/${cohortId}`)
+    revalidatePath(ROUTES.tenant(tenantSlug).admin.cohortDetail(cohortId))
     return { success: true }
 }

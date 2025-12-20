@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { logAudit } from '@/lib/admin/audit'
+import { ROUTES } from '@/lib/config/routes'
 
 const contentSchema = z.object({
     title: z.string().min(1, "Title is required"),
@@ -50,7 +51,7 @@ export async function createContent(moduleId: string, formData: FormData, tenant
         metadata: { title, moduleId, tenantId }
     })
 
-    revalidatePath(`/t/${tenantSlug}/admin/modules/${moduleId}/content`)
+    revalidatePath(ROUTES.tenant(tenantSlug).admin.content(moduleId))
     return { success: true }
 }
 
@@ -90,7 +91,7 @@ export async function updateContent(id: string, moduleId: string, formData: Form
         metadata: { title, moduleId }
     })
 
-    revalidatePath(`/t/${tenantSlug}/admin/modules/${moduleId}/content`)
+    revalidatePath(ROUTES.tenant(tenantSlug).admin.content(moduleId))
     return { success: true }
 }
 
@@ -107,7 +108,7 @@ export async function deleteContent(id: string, moduleId: string, tenantSlug: st
         metadata: { moduleId }
     })
 
-    revalidatePath(`/t/${tenantSlug}/admin/modules/${moduleId}/content`)
+    revalidatePath(ROUTES.tenant(tenantSlug).admin.content(moduleId))
     return { success: true }
 }
 

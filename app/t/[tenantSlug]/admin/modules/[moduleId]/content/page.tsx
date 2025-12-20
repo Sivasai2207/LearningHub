@@ -26,6 +26,7 @@ const TYPE_ICONS = {
 
 import { getTenantContext } from '@/lib/tenant/context'
 import { notFound } from 'next/navigation'
+import { ROUTES } from '@/lib/config/routes'
 
 export default async function ContentPage({ params }: { params: Promise<{ tenantSlug: string, moduleId: string }> }) {
   const { tenantSlug, moduleId } = await params
@@ -58,12 +59,12 @@ export default async function ContentPage({ params }: { params: Promise<{ tenant
       <div>
         <Button variant="ghost" size="sm" asChild className="mb-4 pl-0 hover:bg-transparent">
             {course ? (
-                <Link href={`/t/${tenantSlug}/admin/courses/${course.id}/modules`} className="flex items-center gap-1 text-muted-foreground hover:text-foreground">
+                <Link href={ROUTES.tenant(tenantSlug).admin.modules(course.id)} className="flex items-center gap-1 text-muted-foreground hover:text-foreground">
                     <ChevronLeft className="w-4 h-4" />
                     Back to Modules
                 </Link>
             ) : (
-                 <Link href={`/t/${tenantSlug}/admin/courses`} className="flex items-center gap-1 text-muted-foreground hover:text-foreground">
+                 <Link href={ROUTES.tenant(tenantSlug).admin.courses} className="flex items-center gap-1 text-muted-foreground hover:text-foreground">
                     <ChevronLeft className="w-4 h-4" />
                     Back to Courses
                 </Link>

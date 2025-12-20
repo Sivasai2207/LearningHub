@@ -9,6 +9,7 @@ import { Course } from '@/types/db'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import { ROUTES } from '@/lib/config/routes'
 
 export function CourseActions({ course }: { course: Course }) {
   const [loading, setLoading] = useState(false)
@@ -32,7 +33,7 @@ export function CourseActions({ course }: { course: Course }) {
   return (
     <div className="flex items-center gap-2">
       <Button variant="outline" size="sm" asChild>
-        <Link href={`/t/${tenantSlug}/admin/courses/${course.id}/modules`}>Manage Modules</Link>
+        <Link href={ROUTES.tenant(tenantSlug).admin.modules(course.id)}>Manage Modules</Link>
       </Button>
       <CourseDialog course={course} trigger={<Button variant="ghost" size="icon"><Edit className="h-4 w-4"/></Button>} />
       <Button variant="ghost" size="icon" onClick={handleDelete} disabled={loading}>

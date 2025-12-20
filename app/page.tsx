@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { GraduationCap, ArrowRight, Users, BookOpen, BarChart3 } from 'lucide-react'
+import { ROUTES } from '@/lib/config/routes'
 
 export default async function Home() {
   const supabase = await createClient()
@@ -20,13 +21,14 @@ export default async function Home() {
 
     if (membership && membership.tenants) {
       const slug = (membership.tenants as any).slug
+      const tenantRoutes = ROUTES.tenant(slug)
       const dashboardPath = ['owner', 'admin', 'trainer'].includes(membership.role)
-        ? `/t/${slug}/admin`
-        : `/t/${slug}/employee`
+        ? tenantRoutes.admin.dashboard
+        : tenantRoutes.employee.dashboard
       redirect(dashboardPath)
     } else {
       // User exists but has no tenant - send to setup
-      redirect('/setup')
+      redirect(ROUTES.setup)
     }
   }
 
@@ -41,12 +43,12 @@ export default async function Home() {
             <span className="text-xl font-bold text-white">Learning Hub</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/login">
+            <Link href={ROUTES.login}>
               <Button variant="ghost" className="text-slate-300 hover:text-white">
                 Sign In
               </Button>
             </Link>
-            <Link href="/signup">
+            <Link href={ROUTES.signup}>
               <Button className="bg-blue-600 hover:bg-blue-700">
                 Get Started
               </Button>
@@ -67,12 +69,12 @@ export default async function Home() {
             Create courses, track progress, and upskill your workforce efficiently.
           </p>
           <div className="flex gap-4 justify-center">
-            <Link href="/signup">
+            <Link href={ROUTES.signup}>
               <Button size="lg" className="bg-blue-600 hover:bg-blue-700 gap-2">
                 Start Free Trial <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
-            <Link href="/login">
+            <Link href={ROUTES.login}>
               <Button size="lg" variant="outline" className="border-slate-600 text-slate-300 hover:bg-slate-800">
                 View Demo
               </Button>
