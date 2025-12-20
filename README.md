@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Employee Learning Hub
 
-## Getting Started
+## Overview
+A Next.js + Supabase application for managing employee learning courses.
+**Status**: Phase 3 Complete (Operational Hardening).
 
-First, run the development server:
+## Features
+- **Authentication**: Email/Password + Role Management (Admin/Employee).
+- **Admin Portal**: 
+  - Manage Courses, Modules, Content.
+  - **Employee Management**: Invite, Edit, Toggle Active.
+  - **Assignments**: Assign courses to employees.
+  - **Audit Logs**: Track all system changes.
+  - **Bulk Import**: JSON import for courses.
+- **Employee Portal**: 
+  - View assigned courses only.
+  - Read-only access to learning content.
+- **Security**: Strict RLS + Service Role for User Mgmt.
 
+## Setup Instructions
+
+### 1. Supabase Project Setup
+1. Create a new project at [Supabase](https://supabase.com).
+2. Go to **Project Settings > API**.
+3. Copy **Project URL**, **anon public key**, and **service_role secret**.
+
+### 2. Environment Variables
+1. Copy `.env.local.example` to `.env.local`.
+2. Add:
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=...
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+   SUPABASE_SERVICE_ROLE_KEY=...  # Required for User Management
+   ```
+
+### 3. Database Migration
+Run these SQL scripts in order via Supabase SQL Editor:
+1. `db/migrations/00_init_schema.sql` (Base Schema)
+2. `db/migrations/01_assignments_schema.sql` (Assignments)
+3. `db/migrations/02_audit_schema.sql` (Audit Logs)
+4. `db/policies/phase2_rls.sql` (Strict RLS)
+
+### 4. Create First Admin
+1. Sign up a new user via `/signup`.
+2. In Supabase **Table Editor > profiles**, change `role` to `admin` and `active` to `TRUE`.
+
+### 5. Running the App
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Testing & Verification
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Manual Test Plan
+1. **Users**:
+   - Go to `/admin/employees`. Click "Add Employee".
+   - Create a user. Verify they appear in the list.
+2. **Bulk Import**:
+   - Go to `/admin/tools/import`.
+   - Paste JSON from `db/seed/example_import.json` (create this if needed or use simple JSON).
+   ```json
+   { "courses": [{ "title": "Test Course", "modules": [] }] }
+   ```
+3. **Audit**:
+   - Go to `/admin/audit`.
+   - Verify that your Create User and Import actions are logged.
+4. **Assignments & Access**:
+   - Verify standard Phase 2 assignment flows still work.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Troubleshooting
+- **User Creation Failed?**: Check `SUPABASE_SERVICE_ROLE_KEY` is in `.env.local` and restart server.
+- **Audit Logs Empty?**: Ensure policies in `02_audit_schema.sql` ran correctly.
