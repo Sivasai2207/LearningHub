@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button'
 import { Link as LinkIcon, ExternalLink } from 'lucide-react'
-import { Course } from '@/types/db'
 import Link from 'next/link'
 import { ROUTES } from '@/lib/config/routes'
 import {
@@ -12,7 +11,15 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 
-export function AssignedCourseGrid({ courses, tenantSlug }: { courses: Course[], tenantSlug: string }) {
+// Minimal type for assigned courses (subset of full Course)
+type AssignedCourse = {
+    id: string
+    title: string
+    status: string
+    description?: string | null
+}
+
+export function AssignedCourseGrid({ courses, tenantSlug }: { courses: AssignedCourse[], tenantSlug: string }) {
     if (courses.length === 0) {
         return (
             <div className="text-center py-12">

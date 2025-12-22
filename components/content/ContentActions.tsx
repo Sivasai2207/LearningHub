@@ -19,7 +19,7 @@ export function ContentActions({ content, moduleId, tenantId }: { content: Conte
     if (!confirm('Are you sure you want to delete this item?')) return
     
     setLoading(true)
-    const result = await deleteContent(content.id, moduleId, tenantSlug)
+    const result = await deleteContent(content.id, moduleId, tenantId || '', tenantSlug)
     setLoading(false)
     
     if (result?.error) {
