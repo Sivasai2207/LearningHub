@@ -28,8 +28,8 @@ export default async function TenantLayout({
         // Not logged in -> Go to Login
         redirect(ROUTES.login)
     } else {
-        // Logged in but invalid tenant/membership -> Go Home
-        redirect(ROUTES.home)
+        // Logged in but invalid tenant/membership -> Go to Setup/Portal
+        redirect(ROUTES.setup)
     }
   }
 
