@@ -12,8 +12,10 @@ export function Player({ item }: { item: ContentNode }) {
 
     const isYouTube = item.type === 'youtube' || item.url.includes('youtube.com') || item.url.includes('youtu.be')
     const isGoogleDrive = item.url.includes('drive.google.com')
-    const isPdf = item.type === 'pdf' || item.url.toLowerCase().endsWith('.pdf') || isGoogleDrive
-    const isPpt = item.type === 'ppt' || item.url.toLowerCase().endsWith('.ppt') || item.url.toLowerCase().endsWith('.pptx')
+    const isGoogleSlides = item.url.includes('docs.google.com/presentation')
+    const isGoogleDocs = item.url.includes('docs.google.com/document')
+    const isPdf = item.type === 'pdf' || item.url.toLowerCase().endsWith('.pdf') || (isGoogleDrive && !isGoogleSlides)
+    const isPpt = item.type === 'ppt' || item.url.toLowerCase().endsWith('.ppt') || item.url.toLowerCase().endsWith('.pptx') || isGoogleSlides
     const isImage = item.type === 'image'
     
     // Helper to get embed URL (reused from previous viewer logic but cleaner)
@@ -25,6 +27,15 @@ export function Player({ item }: { item: ContentNode }) {
             else if (rawUrl.includes('embed/')) videoId = rawUrl.split('embed/')[1].split('?')[0]
             return `https://www.youtube.com/embed/${videoId}`
         }
+        // Google Slides: Convert to embed link
+        // Pattern: https://docs.google.com/presentation/d/PRESENTATION_ID/edit or /view
+        if (isGoogleSlides) {
+            const match = rawUrl.match(/\/presentation\/d\/([^/]+)/)
+            if (match && match[1]) {
+                return `https://docs.google.com/presentation/d/${match[1]}/embed?start=false&loop=false&delayms=3000`
+            }
+            return rawUrl.replace('/edit', '/embed').replace('/view', '/embed')
+        }
         // Google Drive: Convert sharing link to preview/embed link
         if (isGoogleDrive) {
             // Pattern: https://drive.google.com/file/d/FILE_ID/view?...
@@ -35,7 +46,8 @@ export function Player({ item }: { item: ContentNode }) {
             // Fallback for other Google Drive formats
             return rawUrl.replace('/view', '/preview').replace('/edit', '/preview')
         }
-        if (isPpt) {
+        // External PPT files (not Google)
+        if (isPpt && !isGoogleSlides) {
             return `https://docs.google.com/gview?url=${encodeURIComponent(rawUrl)}&embedded=true`
         }
         return rawUrl
